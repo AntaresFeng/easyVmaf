@@ -213,7 +213,7 @@ class FFmpegQos:
         """
         main = self.main.lastOutputID
         ref = self.ref.lastOutputID
-        if stats_file == True:
+        if stats_file:
             stats_file = os.path.splitext(self.main.videoSrc)[0] + '_psnr.log'
         else:
             stats_file = 'stats_file_psnr.log'
@@ -231,25 +231,22 @@ class FFmpegQos:
     def getVmaf(self, log_path=None, model='HD', subsample=1, output_fmt='json', threads=0, print_progress=False, end_sync=False, features=None, cambi_heatmap=False, gpu=False):
         if output_fmt == 'xml':
             log_fmt = "xml"
-            if log_path == None:
+            if log_path is None:
                 log_path = os.path.splitext(self.main.videoSrc)[
                     0] + '_vmaf.xml'
         elif output_fmt == "csv":
             log_fmt = "csv"
-            if log_path == None:
+            if log_path is None:
                 log_path = os.path.splitext(self.main.videoSrc)[
                     0] + '_vmaf.csv'
         else :
             log_fmt = "json"
-            if log_path == None:
+            if log_path is None:
                 log_path = os.path.splitext(self.main.videoSrc)[
                     0] + '_vmaf.json'
 
         self.vmafpath = log_path
-
         self.vmaf_cambi_heatmap_path = os.path.splitext(self.main.videoSrc)[0] + '_cambi_heatmap'
-
-
 
         model_str = FFmpegQos._build_model_string(model)
         if threads == 0:
@@ -268,11 +265,15 @@ class FFmpegQos:
 
         vmaf_filter_name = 'libvmaf_cuda' if gpu else 'libvmaf'
 
+        # Escape \ and : in paths so FFmpeg filter parser treats them as literals
+        def _esc(p):
+            return p.replace('\\', '\\\\').replace(':', '\\\\:')
+
         base_params = (
             f'log_fmt={log_fmt}'
             f':model={model_str}'
             f':n_subsample={subsample}'
-            f':log_path={log_path}'
+            f':log_path={_esc(log_path)}'
             f':n_threads={threads}'
             f':shortest={shortest}'
         )
@@ -289,7 +290,7 @@ class FFmpegQos:
         elif features and cambi_heatmap:
             self.vmafFilter = [
                 f'[{main}][{ref}]{vmaf_filter_name}={base_params}'
-                f':feature={features}\\\\:heatmaps_path={self.vmaf_cambi_heatmap_path}'
+                f':feature={features}\\\\:heatmaps_path={_esc(self.vmaf_cambi_heatmap_path)}'
             ]
 
 

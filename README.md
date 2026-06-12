@@ -11,7 +11,7 @@ Details about **How it Works** can be found [here](https://ottverse.com/vmaf-eas
 
 ## Requirements
 
-- Linux / macOS
+- Linux / macOS / Windows
 - Python >= 3.8
 - FFmpeg >= 5.0 built with `--enable-libvmaf` (built-in models required)
 - Python package: [`ffmpeg-progress-yield`](https://github.com/slhck/ffmpeg-progress-yield)
@@ -40,7 +40,11 @@ pip install -e .
 FFmpeg must be on `PATH`, or override via environment variables:
 
 ```bash
+# Linux / macOS
 FFMPEG=/path/to/ffmpeg FFPROBE=/path/to/ffprobe easyvmaf ...
+
+# Windows (PowerShell)
+$env:FFMPEG="C:\path\to\ffmpeg.exe"; $env:FFPROBE="C:\path\to\ffprobe.exe"; easyvmaf ...
 ```
 
 ## Usage

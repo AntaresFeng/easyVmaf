@@ -468,7 +468,7 @@ class vmaf():
         If offset < 0: Main delayed compared to Ref. Trimfilter cuts Main.
         """
 
-        if value != None:
+        if value is not None:
             """ overrides the value in self.offset"""
             self.offset = value
 

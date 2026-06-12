@@ -31,9 +31,9 @@ import os.path
 import sys
 import xml.etree.ElementTree as ET
 from signal import signal, SIGINT
-from statistics import mean, harmonic_mean
+from statistics import mean
 
-from .ffmpeg import check_ffmpeg, HD_MODEL_NAME, HD_NEG_MODEL_NAME, HD_PHONE_MODEL_NAME, _4K_MODEL_NAME, HD_PHONE_MODEL_VERSION
+from .ffmpeg import check_ffmpeg, HD_MODEL_NAME, HD_NEG_MODEL_NAME, HD_PHONE_MODEL_NAME, _4K_MODEL_NAME
 from .vmaf import vmaf, UnsupportedFramerateError
 
 logger = logging.getLogger(__name__)
@@ -179,7 +179,6 @@ def main():
     print_progress = cmdParser.progress
     end_sync = cmdParser.endsync
     cambi_heatmap = cmdParser.cambi_heatmap
-    sync_only = cmdParser.sync_only
     use_json = cmdParser.json
     gpu_mode = cmdParser.gpu
 
@@ -240,7 +239,7 @@ def main():
         logger.info("GPU mode enabled — using libvmaf_cuda filter.")
 
     # check output format
-    if not output_fmt in ["json", "xml", "csv"]:
+    if output_fmt not in ["json", "xml", "csv"]:
         logger.warning("output_fmt '%s' not supported, using json", output_fmt)
         output_fmt = "json"
 
@@ -289,7 +288,7 @@ def main():
                 else:
                     myVmaf.offset = offset
 
-            vmafProcess = myVmaf.getVmaf()
+            myVmaf.getVmaf()
         except (UnsupportedFramerateError, ValueError) as e:
             print(f"[easyVmaf] ERROR: {e}", file=sys.stderr)
             sys.exit(1)
