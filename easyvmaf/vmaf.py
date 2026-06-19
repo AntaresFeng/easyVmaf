@@ -176,7 +176,7 @@ class vmaf():
         - Frame rate conversion (if needed)
     """
 
-    def __init__(self, mainSrc, refSrc, output_fmt, model="HD", phone=False, loglevel="info", subsample=1, threads=0, print_progress=False, end_sync=False,  manual_fps=0, cambi_heatmap=False, gpu_mode=False):
+    def __init__(self, mainSrc, refSrc, output_fmt, model="HD", phone=False, loglevel="info", subsample=1, threads=0, print_progress=False, end_sync=False,  manual_fps=0, cambi_heatmap=False, gpu_mode=False, pre_filter=None):
         self.loglevel = loglevel
         self.main = video(mainSrc, self.loglevel)
         self.ref = video(refSrc, self.loglevel)
@@ -197,6 +197,7 @@ class vmaf():
         self.end_sync = end_sync
         self.cambi_heatmap = cambi_heatmap
         self._filters_applied = False
+        self.pre_filter = pre_filter
 
 
     def _initResolutions(self):
@@ -547,6 +548,10 @@ class vmaf():
 
         """AutoScale according to vmaf model and deinterlace the source if needed """
         self._autoScale()
+
+        if self.pre_filter:
+            self.ffmpegQos.main.setPreFilter(self.pre_filter)
+            self.ffmpegQos.ref.setPreFilter(self.pre_filter)
 
         if self.manual_fps == 0:
             self._autoDeinterlace()
