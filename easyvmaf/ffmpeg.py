@@ -444,6 +444,22 @@ class inputFFmpeg:
         self._setFilter(fpsFilter)
         self._updateOutputId(outputID)
 
+    def setPreFilter(self, filter_string):
+        """
+        Insert an arbitrary FFmpeg filter after the current filter chain position.
+
+        Args:
+            filter_string: a complete FFmpeg filter descriptor, e.g.
+                'drawbox=x=0:y=0:w=100:h=100:color=black:t=fill'
+
+        The filter is appended to the chain with automatic I/O label wiring,
+        following the same pattern as setScaleFilter and setFpsFilter.
+        """
+        inputID, outputID = self._newInOutForFilter()
+        preFilter = f'[{inputID}]{filter_string}[{outputID}]'
+        self._setFilter(preFilter)
+        self._updateOutputId(outputID)
+
     def clearFilters(self):
         self.filtersList = []
         self.lastOutputID = f'{str(self.id)}:v'
