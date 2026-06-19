@@ -529,11 +529,13 @@ class vmaf():
         Filter application contract — always in this order:
             1. clearFilters()     — reset all filter chains on ffmpegQos
             2. _autoScale()       — scale both streams to model target resolution
-            3. _autoDeinterlace() — normalize frame rate and deinterlace if needed
+            3. pre_filter         — apply user filter (--pre-filter) to both
+                                     streams, if set
+            4. _autoDeinterlace() — normalize frame rate and deinterlace if needed
                OR _forceFps()     — if manual_fps is set
-            4. setOffset()        — apply trim filters for temporal sync
+            5. setOffset()        — apply trim filters for temporal sync
 
-        Note: syncOffset() (when autoSync=True) is called between steps 3 and 4.
+        Note: syncOffset() (when autoSync=True) is called between steps 4 and 5.
         After task-07, syncOffset() uses independent FFmpegQos instances per
         worker and does not mutate self.ffmpegQos filter chains, so step 3
         filters remain intact when setOffset() runs.
