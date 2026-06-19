@@ -462,7 +462,10 @@ class vmaf():
         Trim filters are appended to the existing filter chain — they must
         come last in the sequence.
 
-        If offset == 0, no filters are applied (streams are already in sync).
+        If offset == 0, both streams get a zero-start trim (no-op) so that
+        setpts=PTS-STARTPTS resets their PTS to zero.  This prevents
+        mismatched initial container timestamps from causing libvmaf to
+        misalign frames when ts_sync_mode=default.
 
         If offset > 0: Ref delayed compared to Main. Trimfilter cuts Ref.
         If offset < 0: Main delayed compared to Ref. Trimfilter cuts Main.
@@ -482,6 +485,12 @@ class vmaf():
             offset = abs(self.offset)
             duration = min(self.main.duration - offset, self.ref.duration)
             self.ffmpegQos.main.setTrimFilter(offset, duration)
+            self.ffmpegQos.ref.setTrimFilter(0, duration)
+
+        else:
+            # offset == 0: only reset PTS to zero on both streams, no trimming
+            duration = min(self.main.duration, self.ref.duration)
+            self.ffmpegQos.main.setTrimFilter(0, duration)
             self.ffmpegQos.ref.setTrimFilter(0, duration)
 
     def _build_feature_string(self) -> Optional[str]:
