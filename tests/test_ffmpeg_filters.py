@@ -161,10 +161,10 @@ class TestVmafPreFilter:
 
 
 class TestCliPreFilter:
-    """Tests for --pre-filter CLI argument."""
+    """Tests for -pre_filter CLI argument."""
 
     def test_pre_filter_argument_parses(self):
-        """--pre-filter should be parsed as a string."""
+        """-pre_filter should be parsed as a string."""
         import sys
         from easyvmaf.cli import get_args
 
@@ -172,14 +172,14 @@ class TestCliPreFilter:
             'easyvmaf',
             '-d', 'distorted.mp4',
             '-r', 'reference.mp4',
-            '--pre-filter', 'drawbox=x=0:y=0:w=100:h=100:color=black:t=fill'
+            '-pre_filter', 'drawbox=x=0:y=0:w=100:h=100:color=black:t=fill'
         ]
         sys.argv = test_args
         args = get_args()
         assert args.pre_filter == 'drawbox=x=0:y=0:w=100:h=100:color=black:t=fill'
 
     def test_pre_filter_defaults_to_none(self):
-        """--pre-filter should default to None when not provided."""
+        """-pre_filter should default to None when not provided."""
         import sys
         from easyvmaf.cli import get_args
 
@@ -189,7 +189,7 @@ class TestCliPreFilter:
         assert args.pre_filter is None
 
     def test_pre_filter_with_multiple_drawboxes(self):
-        """--pre-filter should accept comma-separated drawbox chain."""
+        """-pre_filter should accept comma-separated drawbox chain."""
         import sys
         from easyvmaf.cli import get_args
 
@@ -198,19 +198,19 @@ class TestCliPreFilter:
             "drawbox=x=1500:y=1000:w=400:h=60:color=0xff4444@0.6:t=fill"
         )
         test_args = ['easyvmaf', '-d', 'd.mp4', '-r', 'r.mp4',
-                     '--pre-filter', filter_str]
+                     '-pre_filter', filter_str]
         sys.argv = test_args
         args = get_args()
         assert args.pre_filter == filter_str
 
     def test_pre_filter_with_enable_clause(self):
-        """--pre-filter should accept drawbox with enable= time expression."""
+        """-pre_filter should accept drawbox with enable= time expression."""
         import sys
         from easyvmaf.cli import get_args
 
         filter_str = "drawbox=x=0:y=0:w=200:h=80:color=black@0.5:t=4:enable='between(t,0,10)'"
         test_args = ['easyvmaf', '-d', 'd.mp4', '-r', 'r.mp4',
-                     '--pre-filter', filter_str]
+                     '-pre_filter', filter_str]
         sys.argv = test_args
         args = get_args()
         assert args.pre_filter == filter_str

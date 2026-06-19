@@ -145,11 +145,11 @@ def get_args():
         default=False
     )
     parser.add_argument(
-        '--pre-filter', dest='pre_filter', type=str, default=None,
+        '-pre_filter', type=str, default=None,
         help='FFmpeg filter string applied to both distorted and reference '
              'videos after scaling, before deinterlace/fps. '
              'Use drawbox to cover logos, subtitles, or watermarks. '
-             'Example: --pre-filter "drawbox=x=0:y=0:w=200:h=80:color=black:t=fill"'
+             'Example: -pre_filter "drawbox=x=0:y=0:w=200:h=80:color=black:t=fill"'
     )
 
     if len(sys.argv) == 1:
