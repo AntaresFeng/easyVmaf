@@ -165,7 +165,7 @@ class FFmpegQos:
 
     def _commitInputs(self):
         """build the cmd for the inputs files"""
-        return ['-i', self.main.videoSrc, '-i', self.ref.videoSrc, '-map', '0:v', '-map', '1:v']
+        return ['-i', self.main.videoSrc, '-i', self.ref.videoSrc, '-map', '0:v:0', '-map', '1:v:0']
 
     def _commitOutputs(self):
         return ['-f', 'null', '-']
@@ -310,8 +310,18 @@ class FFmpegQos:
 
         else:
             process = subprocess.Popen(
-                self._cmd, stdout=subprocess.PIPE, shell=False)
-            process.communicate()
+                self._cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
+            _, stderr = process.communicate()
+            if process.returncode != 0:
+                raise RuntimeError(
+                    f"FFmpeg VMAF process failed (exit code {process.returncode}): "
+                    f"{stderr.decode(errors='replace')}"
+                )
+
+        if not os.path.isfile(log_path):
+            raise RuntimeError(
+                f"FFmpeg VMAF output file not created: {log_path}"
+            )
 
         return process
 
