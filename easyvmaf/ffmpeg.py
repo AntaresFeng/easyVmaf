@@ -338,6 +338,7 @@ class inputFFmpeg:
     - setDeintFieldFilter()
     - setTrimFilter()
     - setFpsFilter()
+    - setPreFilter()
     - clearFilters()
     '''
 
