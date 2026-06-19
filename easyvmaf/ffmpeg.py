@@ -265,8 +265,13 @@ class FFmpegQos:
 
         vmaf_filter_name = 'libvmaf_cuda' if gpu else 'libvmaf'
 
-        # Escape \ and : in paths so FFmpeg filter parser treats them as literals
+        # Escape \ and : in paths so FFmpeg filter parser treats them as literals.
+        # Normalize platform path separators to / first — FFmpeg accepts forward
+        # slashes on all platforms, and they don't need escaping in filter strings.
+        # This avoids the Windows issue where .\ gets misinterpreted as a dot-prefixed
+        # filename instead of a current-directory relative path.
         def _esc(p):
+            p = p.replace(os.sep, '/')
             return p.replace('\\', '\\\\').replace(':', '\\\\:')
 
         base_params = (
