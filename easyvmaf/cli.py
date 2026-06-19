@@ -144,6 +144,13 @@ def get_args():
         action='store_true',
         default=False
     )
+    parser.add_argument(
+        '--pre-filter', dest='pre_filter', type=str, default=None,
+        help='FFmpeg filter string applied to both distorted and reference '
+             'videos after scaling, before deinterlace/fps. '
+             'Use drawbox to cover logos, subtitles, or watermarks. '
+             'Example: --pre-filter "drawbox=x=0:y=0:w=200:h=80:color=black:t=fill"'
+    )
 
     if len(sys.argv) == 1:
         parser.print_help(sys.stderr)
@@ -264,7 +271,7 @@ def main():
 
         try:
             myVmaf = vmaf(main, reference, loglevel=loglevel, subsample=n_subsample, model=model,
-                          output_fmt=output_fmt, threads=threads, print_progress=print_progress, end_sync=end_sync, manual_fps=fps, cambi_heatmap=cambi_heatmap, gpu_mode=gpu_mode)
+                          output_fmt=output_fmt, threads=threads, print_progress=print_progress, end_sync=end_sync, manual_fps=fps, cambi_heatmap=cambi_heatmap, gpu_mode=gpu_mode, pre_filter=cmdParser.pre_filter)
             if syncWin > 0:
                 offset, psnr = myVmaf.syncOffset(syncWin, ss, reverse)
                 if cmdParser.sync_only:
