@@ -350,7 +350,7 @@ class vmaf():
     def _forceFps(self):
         logger.warning("Forcing frame rate conversion manually")
         self.ffmpegQos.main.setFpsFilter(self.manual_fps)
-        self.ffmpegQos.main.setFpsFilter(self.manual_fps)
+        self.ffmpegQos.ref.setFpsFilter(self.manual_fps)
 
     def _computePsnrAtOffset(self, offset, reverse):
         """
